@@ -1,70 +1,90 @@
-# Getting Started with Create React App
+# Frontend Challenge
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository contains a simple task management application that needs several improvements and migrations. Your challenge is to implement these changes while maintaining and enhancing the application's functionality.
 
-## Available Scripts
+## Current Application
 
-In the project directory, you can run:
+The application is a simple task manager that allows users to:
+- View a list of tasks
+- Add new tasks
+- Edit existing tasks
+- Delete tasks
 
-### `npm start`
+The data is fetched from JSONPlaceholder API.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Challenge Requirements
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Your task is to improve this application by implementing the following requirements:
 
-### `npm test`
+1. **Replace react-scripts with Webpack**
+   - Configure Webpack from scratch
+   - Include necessary loaders and plugins
+   - Configure development and production builds
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. **Migrate to TypeScript**
+   - Convert all JavaScript files to TypeScript
+   - Add proper type definitions
+   - Configure TypeScript compiler options
 
-### `npm run build`
+3. **Implement Material UI**
+   - Replace current styling with Material UI components
+   - Create a cohesive, user-friendly interface
+   - Implement responsive design
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+4. **Integrate React Query**
+   - Replace current Axios implementations with React Query
+   - Implement proper caching strategies
+   - Handle loading and error states
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+5. **Improve Logic and UI**
+   - Enhance the overall user experience
+   - Optimize performance where possible
+   - Add any features you think would improve the application
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+6. **Add Unit Tests**
+   - Write unit tests for components
+   - Ensure proper test coverage
+   - Implement testing best practices
 
-### `npm run eject`
+## Evaluation Criteria
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Your submission will be evaluated based on:
+- Code quality and organization
+- Implementation of all requirements
+- Performance optimizations
+- UI/UX improvements
+- Test coverage
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Getting Started
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Clone this repository
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Run the current application:
+   ```
+   npm start
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Submission Guidelines
 
-## Learn More
+1. Create a new repository with your implementation
+2. Make your repository public
+3. Include a README with:
+   - Instructions on how to run the application
+   - Explanation of your approach
+   - Any decisions or trade-offs you made
+   - Further improvements you would make with more time
+4. Send the repository URL by email with the subject "Frontend Challenge Submission - [Your Name]"
+5. Please complete the challenge within 7 days of receiving it
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Bonus Points
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Adding a state management solution
+- Implementing form validation
+- Adding authentication
+- Implementing a dark/light theme toggle
+- Dockerizing the application
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Good luck!
