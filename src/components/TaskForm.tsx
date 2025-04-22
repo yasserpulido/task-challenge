@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
+import {
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Stack,
+  Paper,
+} from "@mui/material";
 
 function TaskForm() {
   const { id } = useParams<{ id: string }>();
@@ -20,48 +28,56 @@ function TaskForm() {
     }
   }, [id]);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (id === "new") {
-      axios
-        .post("https://jsonplaceholder.typicode.com/todos", task)
-        .then(() => {
-          history.push("/");
-        });
-    } else {
-      axios
-        .put(`https://jsonplaceholder.typicode.com/todos/${id}`, task)
-        .then(() => {
-          history.push("/");
-        });
-    }
+
+    const method = id === "new" ? axios.post : axios.put;
+    const url =
+      id === "new"
+        ? "https://jsonplaceholder.typicode.com/todos"
+        : `https://jsonplaceholder.typicode.com/todos/${id}`;
+
+    method(url, task).then(() => history.push("/"));
   };
 
   return (
-    <div>
-      <h1>{id === "new" ? "Add New Task" : "Edit Task"}</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Title</label>
-          <input
-            type="text"
-            value={task.title}
-            onChange={(e) => setTask({ ...task, title: e.target.value })}
-          />
-        </div>
-        <div>
-          <label>Description</label>
-          <input
-            type="text"
-            value={task.description}
-            onChange={(e) => setTask({ ...task, description: e.target.value })}
-          />
-        </div>
-        <button type="submit">
-          {id === "new" ? "Add Task" : "Update Task"}
-        </button>
-      </form>
-    </div>
+    <Paper sx={{ p: 4, maxWidth: 500, mx: "auto" }}>
+      <Stack spacing={2}>
+        <Box sx={{ textAlign: "right" }}>
+          <Button
+            variant="text"
+            onClick={() => history.push("/")}
+            sx={{ textTransform: "uppercase", fontWeight: 500 }}
+          >
+            Back
+          </Button>
+        </Box>
+        <Typography variant="h5" gutterBottom>
+          {id === "new" ? "Add New Task" : "Edit Task"}
+        </Typography>
+        <Box component="form" onSubmit={handleSubmit}>
+          <Stack spacing={2}>
+            <TextField
+              label="Title"
+              value={task.title}
+              fullWidth
+              onChange={(e) => setTask({ ...task, title: e.target.value })}
+            />
+            <TextField
+              label="Description"
+              value={task.description}
+              fullWidth
+              onChange={(e) =>
+                setTask({ ...task, description: e.target.value })
+              }
+            />
+            <Button variant="contained" color="primary" type="submit">
+              {id === "new" ? "Add Task" : "Update Task"}
+            </Button>
+          </Stack>
+        </Box>
+      </Stack>
+    </Paper>
   );
 }
 
