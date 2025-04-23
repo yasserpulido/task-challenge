@@ -13,9 +13,12 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import MuiAlert from "@mui/material/Alert";
+import { TextField } from "@mui/material";
 
+import { Task } from "../../types";
+import TaskDetailModal from "./TaskDetailModal";
+import { useUIStore } from "../../store";
 import TaskItem from "./TaskItem";
-import { Task } from "../types";
 
 const fetchTasks = async (): Promise<Task[]> => {
   const local = localStorage.getItem("tasks");
@@ -36,6 +39,10 @@ const Alert = React.forwardRef<HTMLDivElement, any>(function Alert(props, ref) {
 function TaskList() {
   const queryClient = useQueryClient();
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const showCompleted = useUIStore((state) => state.showCompleted);
+  const toggleShowCompleted = useUIStore((state) => state.toggleShowCompleted);
+  const searchTerm = useUIStore((state) => state.searchTerm);
+  const setSearchTerm = useUIStore((state) => state.setSearchTerm);
 
   const {
     data: tasks,
@@ -60,6 +67,15 @@ function TaskList() {
     deleteTaskMutation.mutate(id);
   };
 
+  const toggleComplete = (id: number) => {
+    const current = JSON.parse(localStorage.getItem("tasks") || "[]") as Task[];
+    const updated = current.map((t) =>
+      t.id === id ? { ...t, completed: !t.completed } : t
+    );
+    localStorage.setItem("tasks", JSON.stringify(updated));
+    queryClient.invalidateQueries({ queryKey: ["tasks"] });
+  };
+
   if (isLoading)
     return (
       <Box sx={{ textAlign: "center", mt: 4 }}>
@@ -77,6 +93,7 @@ function TaskList() {
 
   return (
     <Paper sx={{ p: 3 }}>
+      <TaskDetailModal />
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
@@ -94,24 +111,47 @@ function TaskList() {
         mb={2}
       >
         <Typography variant="h4">Task List</Typography>
-        <Button
-          component={RouterLink}
-          to="/edit/new"
-          variant="contained"
-          color="primary"
-        >
-          Add New Task
-        </Button>
+        <Box gap={1} display="flex" alignItems="center">
+          <Button
+            component={RouterLink}
+            to="/edit/new"
+            variant="contained"
+            color="primary"
+          >
+            Add New Task
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={toggleShowCompleted}
+          >
+            {showCompleted ? "Hide completed" : "Show completed"}
+          </Button>
+        </Box>
       </Stack>
+      <TextField
+        label="Search tasks"
+        variant="outlined"
+        fullWidth
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ mb: 2 }}
+      />
       <List>
-        {tasks?.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            deleteTask={deleteTask}
-            isLast={task.id === tasks[tasks.length - 1].id}
-          />
-        ))}
+        {tasks
+          ?.filter((task) => showCompleted || !task.completed)
+          .filter((task) =>
+            task.title.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .map((task, index, filteredTasks) => (
+            <TaskItem
+              key={task.id}
+              task={task}
+              deleteTask={deleteTask}
+              toggleComplete={toggleComplete}
+              isLast={index === filteredTasks.length - 1}
+            />
+          ))}
       </List>
     </Paper>
   );

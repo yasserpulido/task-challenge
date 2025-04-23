@@ -1,19 +1,32 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Task } from "../types";
-import { ListItem, ListItemText, IconButton, Box, Stack, useMediaQuery } from "@mui/material";
+import {
+  ListItem,
+  ListItemText,
+  IconButton,
+  Box,
+  Stack,
+  useMediaQuery,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import DoneIcon from "@mui/icons-material/Done";
+import UndoIcon from "@mui/icons-material/Undo";
+
+import { Task } from "../../types";
+import { useUIStore } from "../../store";
 
 type Props = {
   task: Task;
   deleteTask: (id: number) => void;
+  toggleComplete: (id: number) => void;
   isLast?: boolean;
 };
 
-function TaskItem({ task, deleteTask, isLast }: Props) {
+function TaskItem({ task, deleteTask, toggleComplete, isLast }: Props) {
   const isSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  
+  const setSelectedTask = useUIStore((state) => state.setSelectedTask);
+
   return (
     <ListItem divider={!isLast} disableGutters>
       <Stack
@@ -25,10 +38,12 @@ function TaskItem({ task, deleteTask, isLast }: Props) {
         flexWrap="nowrap"
       >
         <ListItemText
+          onClick={() => setSelectedTask(task)}
           primary={task.title}
           primaryTypographyProps={{
             noWrap: true,
             sx: {
+              cursor: "pointer",
               maxWidth: isSmall ? "65%" : "85%",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -37,6 +52,13 @@ function TaskItem({ task, deleteTask, isLast }: Props) {
           }}
         />
         <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
+          <IconButton
+            onClick={() => toggleComplete(task.id)}
+            color={task.completed ? "success" : "default"}
+            size="small"
+          >
+            {task.completed ? <UndoIcon /> : <DoneIcon />}
+          </IconButton>
           <IconButton
             component={RouterLink}
             to={`/edit/${task.id}`}

@@ -13,7 +13,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
-import { Task } from "../types";
+import { Task } from "../../types";
 
 const fetchTask = async (id: string) => {
   const tasks: Task[] = JSON.parse(localStorage.getItem("tasks") || "[]");
