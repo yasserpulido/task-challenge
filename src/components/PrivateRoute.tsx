@@ -1,12 +1,13 @@
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-
 import { useAuthStore } from "../store";
 
-const PrivateRoute = ({ component: Component, ...rest }: RouteProps) => {
-  const user = useAuthStore((state) => state.user);
+interface PrivateRouteProps extends RouteProps {
+  component: React.ComponentType<any>;
+}
 
-  if (!Component) return null;
+const PrivateRoute = ({ component: Component, ...rest }: PrivateRouteProps) => {
+  const user = useAuthStore((state) => state.user);
 
   return (
     <Route

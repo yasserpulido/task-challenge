@@ -53,6 +53,7 @@ function TaskItem({ task, deleteTask, toggleComplete, isLast }: Props) {
         />
         <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
           <IconButton
+            data-testid="toggle-complete"
             onClick={() => toggleComplete(task.id)}
             color={task.completed ? "success" : "default"}
             size="small"
