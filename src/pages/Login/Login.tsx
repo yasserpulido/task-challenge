@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
-import { useAuthStore } from "../../store";
+import { useLogin } from "../../hooks/useLogin";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState("");
-  const login = useAuthStore((state) => state.login);
+  const login = useLogin();
   const history = useHistory();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,9 +43,14 @@ function Login() {
     if (hasError) return;
 
     try {
+      console.log(
+        "login === mockLogin",
+        login === (globalThis as any).___mockLogin
+      );
       await login(email, password);
       history.push("/");
     } catch (err) {
+      console.log("Login failed", err);
       setError("Email or password is incorrect");
     }
   };

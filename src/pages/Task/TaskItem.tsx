@@ -14,7 +14,7 @@ import DoneIcon from "@mui/icons-material/Done";
 import UndoIcon from "@mui/icons-material/Undo";
 
 import { Task } from "../../types";
-import { useUIStore } from "../../store";
+import { useUIStore } from "../../store/useUIStore";
 
 type Props = {
   task: Task;

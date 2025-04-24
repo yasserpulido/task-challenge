@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import { useAuthStore } from "../store";
+import { useAuthStore } from "../store/useAuthStore";
 
 interface PrivateRouteProps extends RouteProps {
   component: React.ComponentType<any>;

@@ -17,8 +17,9 @@ import {
 } from "@mui/material";
 
 import { PrivateRoute } from "./components";
-import { useAuthStore, useUIStore } from "./store";
 import { Login, TaskForm, TaskList } from "./pages";
+import { useUIStore } from "./store/useUIStore";
+import { useAuthStore } from "./store/useAuthStore";
 
 function App() {
   const darkMode = useUIStore((state) => state.darkMode);

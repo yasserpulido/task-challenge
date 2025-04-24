@@ -1,11 +1,11 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TaskDetailModal from "../TaskDetailModal";
-import { useUIStore } from "../../../store";
 import { createMemoryHistory } from "history";
 import { Router } from "react-router-dom";
+import { useUIStore } from "../../../store/useUIStore";
 
-jest.mock("../../../store", () => ({
+jest.mock("../../../store/useUIStore", () => ({
   useUIStore: jest.fn(),
 }));
 
@@ -84,9 +84,30 @@ describe("TaskDetailModal", () => {
     expect(history.location.pathname).toBe("/edit/1");
     expect(mockSetSelectedTask).toHaveBeenCalledWith(null);
   });
+
+  it("renders fallback text when description is missing", () => {
+    const taskWithoutDescription = {
+      id: 2,
+      title: "Task Without Description",
+      description: "",
+      completed: false,
+    };
+
+    (useUIStore as unknown as jest.Mock).mockImplementation((selector) =>
+      selector({
+        selectedTask: taskWithoutDescription,
+        setSelectedTask: mockSetSelectedTask,
+      })
+    );
+
+    render(<TaskDetailModal />, { wrapper: WrapperWithRouter });
+
+    expect(
+      screen.getByText((content) => content.trim().includes("(No description)"))
+    ).toBeInTheDocument();
+  });
 });
 
-// Helper wrapper with Router
 const WrapperWithRouter = ({ children }: { children: React.ReactNode }) => {
   const history = createMemoryHistory();
   return <Router history={history}>{children}</Router>;

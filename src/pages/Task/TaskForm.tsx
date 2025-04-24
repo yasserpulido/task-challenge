@@ -7,22 +7,17 @@ import {
   Stack,
   Paper,
   CircularProgress,
+  Snackbar,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import { useHistory, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
-
 import { Task } from "../../types";
 
-const fetchTask = async (id: string) => {
+export const fetchTask = async (id: string) => {
   const tasks: Task[] = JSON.parse(localStorage.getItem("tasks") || "[]");
   const task = tasks.find((t) => t.id === parseInt(id));
-
-  if (!task) {
-    throw new Error("Task not found");
-  }
-
+  if (!task) throw new Error("Task not found");
   return {
     title: task.title,
     description: task.description || "",
@@ -39,29 +34,19 @@ function TaskForm() {
   const queryClient = useQueryClient();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [errors, setErrors] = useState<{ title?: string }>({});
-
   const isEditing = id !== "new";
 
   const [task, setTask] = useState({ title: "", description: "" });
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["task", id],
     queryFn: () => fetchTask(id!),
     enabled: isEditing,
+    retry: false,
   });
 
-  if (isEditing && !data && !isLoading) {
-    return (
-      <Typography color="error" sx={{ mt: 4 }}>
-        Task not found.
-      </Typography>
-    );
-  }
-
   useEffect(() => {
-    if (data) {
-      setTask(data);
-    }
+    if (data) setTask(data);
   }, [data]);
 
   const saveTaskMutation = useMutation({
@@ -73,32 +58,76 @@ function TaskForm() {
       const updated = isEditing
         ? current.map((t: Task) => (t.id === newId ? { ...t, ...taskData } : t))
         : [...current, { ...taskData, id: newId, completed: false, userId: 1 }];
-
       localStorage.setItem("tasks", JSON.stringify(updated));
       return Promise.resolve();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       setOpenSnackbar(true);
-      setTimeout(() => {
-        history.push("/");
-      }, 1000);
+      setTimeout(() => history.push("/"), 1000);
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     const newErrors: { title?: string } = {};
-    if (!task.title.trim()) {
-      newErrors.title = "Title is required";
+    if (!task.title.trim()) newErrors.title = "Title is required";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+    saveTaskMutation.mutate(task);
+  };
+
+  const renderContent = () => {
+    if (isEditing && error) {
+      return (
+        <Typography color="error" role="alert" data-testid="task-not-found">
+          Task not found.
+        </Typography>
+      );
     }
 
-    setErrors(newErrors);
+    if (isEditing && isLoading) {
+      return (
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <CircularProgress />
+          <Typography>Loading task...</Typography>
+        </Box>
+      );
+    }
 
-    if (Object.keys(newErrors).length > 0) return;
-
-    saveTaskMutation.mutate(task);
+    return (
+      <Box component="form" onSubmit={handleSubmit}>
+        <Stack spacing={2}>
+          <TextField
+            label="Title"
+            value={task.title}
+            fullWidth
+            onChange={(e) => {
+              setTask({ ...task, title: e.target.value });
+              if (errors.title) {
+                setErrors({ ...errors, title: undefined });
+              }
+            }}
+            error={Boolean(errors.title)}
+            helperText={errors.title}
+          />
+          <TextField
+            label="Description"
+            value={task.description}
+            fullWidth
+            onChange={(e) => setTask({ ...task, description: e.target.value })}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={saveTaskMutation.isPending || openSnackbar}
+          >
+            {isEditing ? "Update Task" : "Add Task"}
+          </Button>
+        </Stack>
+      </Box>
+    );
   };
 
   return (
@@ -126,46 +155,7 @@ function TaskForm() {
         <Typography variant="h5" gutterBottom>
           {isEditing ? "Edit Task" : "Add New Task"}
         </Typography>
-        {isLoading && isEditing ? (
-          <Box sx={{ textAlign: "center", mt: 4 }}>
-            <CircularProgress />
-            <Typography>Cargando tarea...</Typography>
-          </Box>
-        ) : (
-          <Box component="form" onSubmit={handleSubmit}>
-            <Stack spacing={2}>
-              <TextField
-                label="Title"
-                value={task.title}
-                fullWidth
-                onChange={(e) => {
-                  setTask({ ...task, title: e.target.value });
-                  if (errors.title) {
-                    setErrors({ ...errors, title: undefined });
-                  }
-                }}
-                error={Boolean(errors.title)}
-                helperText={errors.title}
-              />
-              <TextField
-                label="Description"
-                value={task.description}
-                fullWidth
-                onChange={(e) =>
-                  setTask({ ...task, description: e.target.value })
-                }
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                type="submit"
-                disabled={saveTaskMutation.isPending || openSnackbar}
-              >
-                {isEditing ? "Update Task" : "Add Task"}
-              </Button>
-            </Stack>
-          </Box>
-        )}
+        {renderContent()}
       </Stack>
     </Paper>
   );

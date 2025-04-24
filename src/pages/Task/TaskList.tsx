@@ -17,10 +17,10 @@ import { TextField } from "@mui/material";
 
 import { Task } from "../../types";
 import TaskDetailModal from "./TaskDetailModal";
-import { useUIStore } from "../../store";
 import TaskItem from "./TaskItem";
+import { useUIStore } from "../../store/useUIStore";
 
-const fetchTasks = async (): Promise<Task[]> => {
+export const fetchTasks = async (): Promise<Task[]> => {
   const local = localStorage.getItem("tasks");
   if (local) {
     return JSON.parse(local);

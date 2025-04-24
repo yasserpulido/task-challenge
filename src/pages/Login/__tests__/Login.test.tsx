@@ -2,23 +2,18 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { createMemoryHistory } from "history";
 import { Router } from "react-router-dom";
-import Login from "../Login";
-import { useAuthStore } from "../../../store";
 
-jest.mock("../../../store", () => ({
-  useAuthStore: jest.fn(),
+const mockLogin = jest.fn();
+jest.mock("../../../hooks/useLogin", () => ({
+  useLogin: () => mockLogin,
 }));
 
+import Login from "../Login";
+
 describe("Login Component", () => {
-  const mockLogin = jest.fn();
-
   beforeEach(() => {
+    localStorage.clear();
     jest.clearAllMocks();
-    mockLogin.mockResolvedValue(undefined);
-
-    (useAuthStore as unknown as jest.Mock).mockReturnValue({
-      login: mockLogin,
-    });
   });
 
   it("renders the login form", () => {
@@ -47,10 +42,11 @@ describe("Login Component", () => {
   });
 
   it("shows error message when login fails", async () => {
+    const history = createMemoryHistory();
     mockLogin.mockRejectedValueOnce(new Error("Invalid credentials"));
 
     render(
-      <Router history={createMemoryHistory()}>
+      <Router history={history}>
         <Login />
       </Router>
     );
@@ -63,10 +59,12 @@ describe("Login Component", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: /login/i }));
 
-    const errorMessage = await screen.findByText(
-      /email or password is incorrect/i
-    );
-    expect(errorMessage).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mockLogin).toHaveBeenCalledWith("test@example.com", "password123");
+      expect(
+        screen.getByText(/email or password is incorrect/i)
+      ).toBeInTheDocument();
+    });
   });
 
   it("redirects to home page on successful login", async () => {
