@@ -189,4 +189,11 @@ Good luck!
 
 ### Why Docker?
 
-- Docker allows for easy deployment and scalability of the application.
+- Docker allows for easy deployment and scalability of the application
+
+## Vercel Deployment
+
+- The application is deployed on Vercel for easy access and testing.
+- You can view the live application at [Vercel Deployment Link](https://task-challenge-sigma.vercel.app/login).
+- The deployment is automatically updated with every push to the main branch.
+- You can test the application directly in your browser without needing to set up a local environment.
