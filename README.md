@@ -131,6 +131,13 @@ Good luck!
    npm run build
    ```
 
+7. To run the application in production mode, use the following command:
+
+   ```
+   npm install -g serve
+   serve -s dist
+   ```
+
 ## Explanation of your approach
 
 - I started by analyzing the existing codebase and identifying areas for improvement.
@@ -156,3 +163,30 @@ Good luck!
 - Implement a more robust authentication system.
 - Add more comprehensive error handling and user feedback mechanisms.
 - Extract logic to make components more reusable and maintainable.
+
+## Running the App with Docker
+
+1. Build the Docker image:
+
+   ```
+   docker build -t react-challenge .
+   ```
+
+2. Run the Docker container:
+
+   ```
+   docker run -d -p 3000:80 react-challenge
+   ```
+
+3. Open your browser and navigate to `http://localhost:3000` to view the application.
+
+4. To stop the Docker container, use the following command:
+
+   ```
+   docker ps # Get the container ID
+   docker stop <container-id>
+   ```
+
+### Why Docker?
+
+- Docker allows for easy deployment and scalability of the application.
