@@ -43,14 +43,9 @@ function Login() {
     if (hasError) return;
 
     try {
-      console.log(
-        "login === mockLogin",
-        login === (globalThis as any).___mockLogin
-      );
       await login(email, password);
       history.push("/");
     } catch (err) {
-      console.log("Login failed", err);
       setError("Email or password is incorrect");
     }
   };

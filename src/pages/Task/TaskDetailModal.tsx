@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useHistory } from "react-router-dom";
+
 import { useUIStore } from "../../store/useUIStore";
 
 function TaskDetailModal() {
